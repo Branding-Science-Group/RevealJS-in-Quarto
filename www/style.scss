@@ -1,0 +1,29 @@
+	/*-- scss:defaults --*/
+
+$font-family-sans-serif: "Calibri", sans-serif;
+$presentation-heading-color: #1A66B2;
+$presentation-title-slide-text-align: "left";
+$presentation-subtitle-slide-text-align: "left";
+$code-block-font-size: 0.6em;
+$code-color: #5f5f5f;
+$presentation-h2-font-size: 1.4em;
+
+	
+/*-- scss:defaults --*/
+
+.reveal .subtitle {
+  position: absolute;
+  color: #ED9F2E;
+  font-size: 2em;
+  text-align: left;
+}
+
+.reveal a {
+  color: #ED9F2E !important;
+}
+
+.reveal .slide-logo {
+  max-height: none !important;
+  height: auto !important;
+  width: 25% !important;
+}

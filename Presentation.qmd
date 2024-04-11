@@ -1,0 +1,229 @@
+---
+title: "Exploring Quarto:"
+subtitle: "Creating an Interactive Presentation"
+format: 
+  revealjs:
+    theme: www/style.scss
+    scrollable: true
+    smaller: true
+    transition: slide
+    background-transition: fade
+    logo: www/images/full_logo.svg
+editor: source
+server: shiny
+---
+
+## What is Quarto?
+
+*"Quarto is a multi-language, next generation version of R Markdown from Posit, with many new features and capabilities"*
+
+The tool is well documented on the [Quarto](https://quarto.org/) website, providing a gallery of examples to work from.
+
+![](www/images/gallery.png)[*Quarto Gallery*](https://quarto.org/docs.gallery/)
+
+## Compatible with R Markdown
+
+**R Markdown isn't going anywhere!**
+
+\
+
+R Markdown is still being maintained, so we don't need to convert our R Markdown projects to Quarto. We can even render our existing `.Rmd` files without converting them to `.qmd`!
+
+\
+
+For example:
+
+```{r, eval=FALSE, echo=TRUE}
+install.packages("quarto")
+quarto::quarto_render("example.Rmd")
+```
+
+\
+
+Similarly to R Markdown, we can render our Quarto documents from the RStudio interface.
+
+## Revealjs Presentations
+
+There are different types of presentations we can make in Quarto; this is a **Revealjs** presentation. We can create Revealjs presentations using the `revealjs` format without needing to install any additional packages.
+
+\
+
+We can use simple commands like `incremental` to add transitions in our presentation, such as in bullet points. Other options include:
+
+::: incremental
+-   `columns` to create columns in a slide
+-   `notes` to add speaker notes
+-   `aside` to create a footnote
+-   `footer` to create a footer
+:::
+
+---
+
+For example, we can use `fragment` to animate content such as text and images.
+
+::: fragment
+![](www/images/both.png)
+:::
+
+::: fragment
+![](www/images/bristolr.png)
+:::
+
+
+## Inserting Shiny
+
+Setting `server: shiny` at the top of our Quarto document, we can write R Shiny code as normal and incorporate this into our presentation. We just need to add `#| context: server` before our server code.
+
+```{r}
+#| panel: sidebar
+h2("Plot options")
+br()
+textInput("title", "Plot heading", value = "Histogram of waiting times")
+br()
+sliderInput("bins", "Number of bins:", 
+            min = 1, max = 50, value = 30)
+br()
+checkboxInput("colour", "Show colour?", value = TRUE)
+
+```
+
+```{r}
+#| panel: fill
+plotOutput("distPlot")
+```
+
+```{r}
+#| context: server
+output$distPlot <- renderPlot({
+   x <- faithful[, 2]  # Old Faithful Geyser data
+   bins <- seq(min(x), max(x), length.out = input$bins + 1)
+   if (input$colour) {
+     col <- "#ED9F2E"
+   } else {
+     col <- "#8298AD"
+   }
+   hist(x, breaks = bins, col = col, border = 'white',
+        xlab = 'Waiting time to next eruption (in mins)',
+        main = input$title)
+})
+```
+
+## Inserting Python
+
+We can add R and python code chunks in the same document. To run python, we use the package `{reticulate}` to manage virtual environments. Then, in a python code chunk, we write our python code as normal.\
+
+R chunk:
+
+```{r, echo=TRUE}
+reticulate::use_virtualenv("bristolr-venv")
+```
+
+Python chunk:
+
+```{python, echo = TRUE}
+#| code-line-numbers: "|1|2|3,4,5,6,7,8,9,10,11,12|13"
+import pandas as pd
+import numpy as np
+df = pd.DataFrame(
+    {
+        "A": 1.0,
+        "B": pd.Timestamp("20130102"),
+        "C": pd.Series(1, index=list(range(4)), dtype="float32"),
+        "D": np.array([3] * 4, dtype="int32"),
+        "E": pd.Categorical(["test", "train", "test", "train"]),
+        "F": "foo",
+    }
+)
+print(df.columns)
+```
+
+## Inline Code
+
+Like in R Markdown, we can use use R inline code when working with the **knitr** engine:
+
+\
+
+```{r, echo=TRUE}
+x <- 1:10 # `r   x`
+```
+
+`r   x`
+
+\
+
+However, unlike R Markdown, Quarto allows us to do this for other languages. For example, if when working with the **jupyter** engine.
+
+\
+
+```{python, echo = TRUE}
+y = [3, 5, 6]
+```
+
+`{python} print(y)`
+
+## Styling
+
+We can add styling via a **CSS** or **SCSS** script. At the top of the Quarto document, add the file path to the script.
+
+\
+
+```         
+title: "Exploring Quarto:"
+subtitle: "Creating an Interactive Presentation"
+format: 
+  revealjs:
+    theme: www/style.scss
+```
+
+\
+
+Sass is a scripting language which is a super-set of CSS. It is used to write more manageable styling sheets and has more features than traditional CSS.
+
+## Quarto vs R Markdown {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+**Quarto isn't just built for R**
+
+-   It supports R, Python, Julia and Observable JS.
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+**Quarto is a command line interface**
+
+-   It is much easier to work outside of the RStudio IDE.
+:::
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+**Quarto is a single product**
+
+-   R Markdown requires additional package installations, e.g. `{bookdown}` for books.
+:::
+:::
+
+::: {.column width="50%"}
+::: fragment
+**Quarto extensions**
+
+-   We can create custom templates and share these with non R-users.
+:::
+:::
+:::
+
+::: fragment
+**Can also publish Quarto documents**
+
+-   Like R Markdown, we can publish Quarto documents with Posit Connect, Github Pages, Confluence and more.
+-   [Quarto Pub](https://quartopub.com/) is a free service for publishing publicly available content.
+:::
+
+# Quarto is really cool!
+
+# Q&A
